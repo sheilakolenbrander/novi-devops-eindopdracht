@@ -1,10 +1,10 @@
 name: Frontend CI
 
 on:
-  push:
-    paths:
-      - 'novi-devops-eindopdracht.client/**'
-      - '.github/workflows/frontend.yml'
+   push:
+    branches: [ main ]
+   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -22,4 +22,4 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t novi-frontend:latest novi-devops-eindopdracht.client
+          docker build -t ${{ github.event.repository.name }}:${{ github.sha }} frontend .

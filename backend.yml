@@ -1,10 +1,10 @@
 name: Backend CI
 
 on:
-  push:
-    paths:
-      - 'novi-devops-eindopdracht.Server/**'
-      - '.github/workflows/backend.yml'
+   push:
+    branches: [ main ]
+   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -21,4 +21,4 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t novi-backend:latest novi-devops-eindopdracht.Server
+        docker build -t ${{ github.event.repository.name }}:${{ github.sha }} backend .
