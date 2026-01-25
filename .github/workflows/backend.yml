@@ -3,6 +3,9 @@ name: Backend CI
 on:
    push:
     branches: [ main ]
+    paths:
+      - 'novi-devops-eindopdracht.Server/**'
+      - '.github/workflows/backend.yml'
    pull_request:
     branches: [ main ]
 
@@ -20,5 +23,6 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Build Docker image
+      working-directory: novi-devops-eindopdracht.Server
       run: |
         docker build -t ${{ github.event.repository.name }}:${{ github.sha }} .
