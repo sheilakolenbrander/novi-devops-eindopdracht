@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1608E3DB-6EEE-4B2C-8AA8-7A063F818876}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{EAFF507F-C17D-48FE-B646-BD6E252C957E}"
 	ProjectSection(SolutionItems) = preProject
 		backend.yml = backend.yml
 		frontend.yml = frontend.yml
@@ -41,7 +41,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{1608E3DB-6EEE-4B2C-8AA8-7A063F818876} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{EAFF507F-C17D-48FE-B646-BD6E252C957E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5338E273-4DBE-43D4-9454-F73E4803003A}
