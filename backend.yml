@@ -1,0 +1,24 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'novi-devops-eindopdracht.Server/**'
+      - '.github/workflows/backend.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Build Docker image
+      run: |
+        docker build -t novi-backend:latest novi-devops-eindopdracht.Server
