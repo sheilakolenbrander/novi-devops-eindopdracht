@@ -32,12 +32,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
+        working-directory: novi-devops-eindopdracht.client
         run: |
-          docker build -t ghcr.io/${{ github.repository }}:${{ github.sha }} .
-          docker tag ghcr.io/${{ github.repository }}:${{ github.sha }} ghcr.io/${{ github.repository }}:latest
+          docker build -t ghcr.io/${{ github.repository }}/frontend:${{ github.sha }} .
+          docker tag ghcr.io/${{ github.repository }}/frontend:${{ github.sha }} ghcr.io/${{ github.repository }}/frontend:latest
 
       - name: Save image
-        run: docker save ghcr.io/${{ github.repository }}:${{ github.sha }} ghcr.io/${{ github.repository }}:latest > image.tar
+        run: docker save ghcr.io/${{ github.repository }}/frontend:${{ github.sha }} ghcr.io/${{ github.repository }}/frontend:latest > image.tar
       - uses: actions/upload-artifact@v4
         with:
           name: docker-image
@@ -63,5 +64,5 @@ jobs:
 
       - name: push image to GHCR
         run: |
-          docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
-          docker push ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+          docker push ghcr.io/${{ github.repository }}/frontend:latest
