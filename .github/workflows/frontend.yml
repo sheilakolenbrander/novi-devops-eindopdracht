@@ -3,6 +3,9 @@ name: Frontend CI
 on:
    push:
     branches: [ main ]
+    paths:
+      - 'novi-devops-eindopdracht.client/**'
+      - '.github/workflows/frontend.yml'
    pull_request:
     branches: [ main ]
 
@@ -19,7 +22,9 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
+        cache-dependency-path: novi-devops-eindopdracht.client/package-lock.json
 
     - name: Build Docker image
+      working-directory: novi-devops-eindopdracht.client
       run: |
           docker build -t ${{ github.event.repository.name }}:${{ github.sha }} .
