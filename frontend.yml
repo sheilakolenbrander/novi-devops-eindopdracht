@@ -22,4 +22,4 @@ jobs:
 
     - name: Build Docker image
       run: |
-          docker build -t ${{ github.event.repository.name }}:${{ github.sha }} frontend .
+          docker build -t ${{ github.event.repository.name }}:${{ github.sha }} .

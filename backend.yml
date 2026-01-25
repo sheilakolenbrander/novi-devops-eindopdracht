@@ -21,4 +21,4 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ github.event.repository.name }}:${{ github.sha }} backend .
+        docker build -t ${{ github.event.repository.name }}:${{ github.sha }} .
