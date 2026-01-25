@@ -1,0 +1,6 @@
+@novi_devops_eindopdracht.Server_HostAddress = http://localhost:5092
+
+GET {{novi_devops_eindopdracht.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

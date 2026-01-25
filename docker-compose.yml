@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./novi-devops-eindopdracht.Server
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    networks:
+      - novi-network
+
+  frontend:
+    build:
+      context: ./novi-devops-eindopdracht.client
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - novi-network
+
+networks:
+  novi-network:
+    driver: bridge
