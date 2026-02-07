@@ -23,12 +23,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        working-directory: novi-devops-eindopdracht.Server
         run: dotnet restore
 
       - name: Run tests
-        working-directory: novi-devops-eindopdracht.Server
-        run: dotnet test --no-restore
+        run: dotnet test Tests/Tests.csproj --no-restore --verbosity normal
         
   build:
     needs: test
