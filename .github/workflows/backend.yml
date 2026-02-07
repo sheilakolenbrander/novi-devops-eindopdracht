@@ -47,7 +47,7 @@ jobs:
           docker save ghcr.io/${{ github.repository }}/backend:${{ github.sha }} ghcr.io/${{ github.repository }}/backend:latest > image.tar
       - uses: actions/upload-artifact@v4
         with:
-          name: docker-image
+          name: docker-image-backend
           path: image.tar
 
   push:
@@ -60,7 +60,7 @@ jobs:
       - name: Download image
         uses: actions/download-artifact@v4
         with:
-          name: docker-image
+          name: docker-image-backend
 
       - name: Load image
         run: docker load < image.tar
