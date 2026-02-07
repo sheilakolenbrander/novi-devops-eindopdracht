@@ -69,7 +69,7 @@ describe('BookComponent', () => {
   it('should load books on init', () => {
     bookService.getAll.and.returnValue(of(mockBooks));
 
-    fixture.detectChanges(); // triggers ngOnInit
+    fixture.detectChanges();
 
     expect(bookService.getAll).toHaveBeenCalled();
     expect(component.books.length).toBe(3);
@@ -137,6 +137,8 @@ describe('BookComponent', () => {
   it('should filter books by status', () => {
     component.books = mockBooks;
     component.selectedFilter = 'toread';
+
+    fixture.detectChanges(); 
 
     const filtered = component.filteredBooks;
 
