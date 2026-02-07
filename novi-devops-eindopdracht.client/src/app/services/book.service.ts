@@ -23,4 +23,12 @@ export class BookService {
   updateStatus(id: number, status: BookStatus): Observable<any> {
     return this.http.put(`${this.api}/${id}/status?status=${status}`, {});
   }
+
+  getById(id: number): Observable<Book> {
+    return this.http.get<Book>(`${this.api}/${id}`);
+  }
+
+  getByStatus(status: BookStatus): Observable<Book[]> {
+    return this.http.get<Book[]>(`${this.api}/status/${status}`);
+  }
 }

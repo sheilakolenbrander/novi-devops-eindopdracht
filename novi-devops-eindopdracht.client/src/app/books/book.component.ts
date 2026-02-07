@@ -65,11 +65,11 @@ export class BookComponent implements OnInit {
       'reading': BookStatus.Reading,
       'read': BookStatus.Read
     };
-    return this.books?.filter(b => b.status === statusMap[this.selectedFilter]);
+    return this.books.filter(b => b.status === statusMap[this.selectedFilter]);
   }
 
   getCount(status: BookStatus): number {
-    return this.books?.filter(b => b.status === status).length;
+    return this.books.filter(b => b.status === status).length;
   }
 
   getStatusLabel(status: BookStatus): string {
