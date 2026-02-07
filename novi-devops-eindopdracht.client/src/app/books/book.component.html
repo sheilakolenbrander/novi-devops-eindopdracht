@@ -1,0 +1,85 @@
+<div class="book-container">
+  <!-- Add Book Section -->
+  <mat-card class="add-book-card">
+    <mat-card-header>
+      <mat-card-title>Nieuw boek toevoegen</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="add-book-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Titel</mat-label>
+          <input matInput [(ngModel)]="newBook.title" #titleInput="ngModel" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Auteur</mat-label>
+          <input matInput [(ngModel)]="newBook.author" #authorInput="ngModel" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="newBook.status">
+            <mat-option [value]="BookStatus.ToRead">Wil lezen</mat-option>
+            <mat-option [value]="BookStatus.Reading">Bezig</mat-option>
+            <mat-option [value]="BookStatus.Read">Gelezen</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addBook(titleInput, authorInput)" class="add-button" [disabled]="!newBook.title || !newBook.author">
+          <mat-icon>add</mat-icon>
+          Toevoegen
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Filter Buttons -->
+  <div class="filter-section">
+    <h2>Mijn boekenlijst</h2>
+    <mat-button-toggle-group [(ngModel)]="selectedFilter" class="filter-toggles">
+      <mat-button-toggle value="all">Alle ({{books.length}})</mat-button-toggle>
+      <mat-button-toggle value="toread">Wil lezen ({{getCount(BookStatus.ToRead)}})</mat-button-toggle>
+      <mat-button-toggle value="reading">Bezig ({{getCount(BookStatus.Reading)}})</mat-button-toggle>
+      <mat-button-toggle value="read">Gelezen ({{getCount(BookStatus.Read)}})</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <!-- Books List -->
+  <div class="books-grid">
+    <mat-card *ngFor="let book of filteredBooks" class="book-card">
+      <mat-card-content>
+        <div class="book-info">
+          <h3>{{book.title}}</h3>
+          <p class="author">{{book.author}}</p>
+          <mat-chip-set>
+            <mat-chip [class]="'status-chip ' + getStatusClass(book.status)">
+              {{getStatusLabel(book.status)}}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        <div class="book-actions">
+          <button mat-icon-button
+                  [ngClass]="{'active-status': book.status === BookStatus.ToRead}"
+                  (click)="setStatus(book, BookStatus.ToRead)"
+                  matTooltip="Wil lezen">
+            <mat-icon>bookmark_border</mat-icon>
+          </button>
+          <button mat-icon-button
+                  [ngClass]="{'active-status': book.status === BookStatus.Reading}"
+                  (click)="setStatus(book, BookStatus.Reading)"
+                  matTooltip="Bezig met lezen">
+            <mat-icon>auto_stories</mat-icon>
+          </button>
+          <button mat-icon-button
+                  [ngClass]="{'active-status': book.status === BookStatus.Read}"
+                  (click)="setStatus(book, BookStatus.Read)"
+                  matTooltip="Gelezen">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="filteredBooks?.length === 0" class="empty-state">
+    <mat-icon>menu_book</mat-icon>
+    <p>Geen boeken gevonden</p>
+  </div>
+</div>

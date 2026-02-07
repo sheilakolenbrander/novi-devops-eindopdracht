@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		frontend.yml = frontend.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{15EBE416-5A07-497F-89D4-F3ED6BDC7614}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{A37B19C6-184B-4A7A-955D-39ECE27E0AD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A37B19C6-184B-4A7A-955D-39ECE27E0AD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A37B19C6-184B-4A7A-955D-39ECE27E0AD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15EBE416-5A07-497F-89D4-F3ED6BDC7614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15EBE416-5A07-497F-89D4-F3ED6BDC7614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15EBE416-5A07-497F-89D4-F3ED6BDC7614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15EBE416-5A07-497F-89D4-F3ED6BDC7614}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
