@@ -58,6 +58,8 @@ describe('BookComponent', () => {
     }).compileComponents();
 
     bookService = TestBed.inject(BookService) as jasmine.SpyObj<BookService>;
+    bookService.getAll.and.returnValue(of(mockBooks));
+
     fixture = TestBed.createComponent(BookComponent);
     component = fixture.componentInstance;
   });
