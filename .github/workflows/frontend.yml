@@ -54,7 +54,7 @@ jobs:
       
       - name: Build application
         working-directory: novi-devops-eindopdracht.client
-        run: npm run build --configuration production
+        run: npm run build -- --configuration production
       
       - name: Build Docker image
         working-directory: novi-devops-eindopdracht.client
