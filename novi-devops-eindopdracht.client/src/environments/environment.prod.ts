@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'http://localhost:8080',
+  apiUrl: 'https://novi-eindopdracht-backend.onrender.com',
   production: true
 };
