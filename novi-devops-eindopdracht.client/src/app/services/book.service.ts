@@ -1,6 +1,7 @@
+/* eslint-disable @angular-eslint/prefer-inject */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Book } from '../models/book';
 import { BookStatus } from '../models/book-status.enum';
 import { environment } from '../../environments/environment';
@@ -20,6 +21,7 @@ export class BookService {
     return this.http.post(this.api, book);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStatus(id: number, status: BookStatus): Observable<any> {
     return this.http.put(`${this.api}/${id}/status?status=${status}`, {});
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/prefer-inject */
 import { Component, OnInit } from '@angular/core';
 import { Book } from '../models/book';
 import { BookService } from '../services/book.service';
@@ -14,7 +15,7 @@ export class BookComponent implements OnInit {
 
   books: Book[] = [];
   BookStatus = BookStatus;
-  selectedFilter: string = 'all';
+  selectedFilter = 'all';
 
   newBook: Book = {
     id: 0,
@@ -60,7 +61,7 @@ export class BookComponent implements OnInit {
     if (this.selectedFilter === 'all') {
       return this.books;
     }
-    const statusMap: { [key: string]: BookStatus } = {
+    const statusMap: Record<string, BookStatus> = {
       'toread': BookStatus.ToRead,
       'reading': BookStatus.Reading,
       'read': BookStatus.Read
@@ -73,7 +74,7 @@ export class BookComponent implements OnInit {
   }
 
   getStatusLabel(status: BookStatus): string {
-    const labels: { [key: number]: string } = {
+    const labels: Record<number, string> = {
       [BookStatus.ToRead]: 'Wil lezen',
       [BookStatus.Reading]: 'Bezig',
       [BookStatus.Read]: 'Gelezen'
@@ -82,7 +83,7 @@ export class BookComponent implements OnInit {
   }
 
   getStatusClass(status: BookStatus): string {
-    const classes: { [key: number]: string } = {
+    const classes: Record<number, string> = {
       [BookStatus.ToRead]: 'status-toread',
       [BookStatus.Reading]: 'status-reading',
       [BookStatus.Read]: 'status-read'
