@@ -95,11 +95,16 @@ describe('BookComponent', () => {
     bookService.getAll.and.returnValue(of([...mockBooks, savedBook]));
 
     // Create mock NgModel objects
-    const titleInput = { reset: jasmine.createSpy('reset') } as any as NgModel;
-    const authorInput = { reset: jasmine.createSpy('reset') } as any as NgModel;
+    const titleInput: Partial<NgModel> = {
+      reset: jasmine.createSpy('reset')
+    };
+
+    const authorInput: Partial<NgModel> = {
+      reset: jasmine.createSpy('reset')
+    };
 
     component.newBook = newBook;
-    component.addBook(titleInput, authorInput);
+    component.addBook(titleInput as NgModel, authorInput as NgModel);
 
     expect(bookService.add).toHaveBeenCalledWith(newBook);
     expect(titleInput.reset).toHaveBeenCalled();
@@ -107,21 +112,31 @@ describe('BookComponent', () => {
   });
 
   it('should not add book with empty title', () => {
-    const titleInput = { reset: jasmine.createSpy('reset') } as any as NgModel;
-    const authorInput = { reset: jasmine.createSpy('reset') } as any as NgModel;
+    const titleInput: Partial<NgModel> = {
+      reset: jasmine.createSpy('reset')
+    };
+
+    const authorInput: Partial<NgModel> = {
+      reset: jasmine.createSpy('reset')
+    };
 
     component.newBook = { id: 0, title: '', author: 'Author', status: BookStatus.ToRead };
-    component.addBook(titleInput, authorInput);
+    component.addBook(titleInput as NgModel, authorInput as NgModel);
 
     expect(bookService.add).not.toHaveBeenCalled();
   });
 
   it('should not add book with empty author', () => {
-    const titleInput = { reset: jasmine.createSpy('reset') } as any as NgModel;
-    const authorInput = { reset: jasmine.createSpy('reset') } as any as NgModel;
+    const titleInput: Partial<NgModel> = {
+      reset: jasmine.createSpy('reset')
+    };
+
+    const authorInput: Partial<NgModel> = {
+      reset: jasmine.createSpy('reset')
+    };
 
     component.newBook = { id: 0, title: 'Title', author: '', status: BookStatus.ToRead };
-    component.addBook(titleInput, authorInput);
+    component.addBook(titleInput as NgModel, authorInput as NgModel);
 
     expect(bookService.add).not.toHaveBeenCalled();
   });

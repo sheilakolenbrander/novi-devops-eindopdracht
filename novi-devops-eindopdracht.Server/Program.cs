@@ -11,11 +11,10 @@ builder.Services.AddSingleton<BookService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
+    options.AddPolicy("AllowAll",
         policy =>
         {
             policy
-                //.WithOrigins("http://localhost:52447")
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -30,10 +29,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.Run();
