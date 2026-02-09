@@ -43,7 +43,7 @@
 
   <!-- Books List -->
   <div class="books-grid">
-    @for (book of filteredBooks) {
+    @for (book of filteredBooks; track book.id) {
     <mat-card class="book-card">
       <mat-card-content>
         <div class="book-info">
