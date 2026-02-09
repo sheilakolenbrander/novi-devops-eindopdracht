@@ -8,6 +8,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<BookService>();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(options =>
 {
@@ -32,6 +33,11 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 app.UseAuthorization();
+
+app.MapHealthChecks("/health");
+app.MapGet("/", () => Results.Redirect("/health"));
+
+app.MapControllers();
 
 app.MapControllers();
 
