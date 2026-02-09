@@ -43,7 +43,8 @@
 
   <!-- Books List -->
   <div class="books-grid">
-    <mat-card *ngFor="let book of filteredBooks" class="book-card">
+    @for (let book of filteredBooks) {
+    <mat-card class="book-card">
       <mat-card-content>
         <div class="book-info">
           <h3>{{book.title}}</h3>
@@ -76,10 +77,13 @@
         </div>
       </mat-card-content>
     </mat-card>
+    }
   </div>
 
-  <div *ngIf="filteredBooks?.length === 0" class="empty-state">
+  @if (filteredBooks?.length === 0) {
+  <div class="empty-state">
     <mat-icon>menu_book</mat-icon>
     <p>Geen boeken gevonden</p>
   </div>
+  }
 </div>
