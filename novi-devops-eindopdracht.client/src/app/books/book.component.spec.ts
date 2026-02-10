@@ -173,7 +173,7 @@ describe('BookComponent', () => {
 
   it('should count books by status', () => {
     fixture.detectChanges();
-    component.books = mockBooks;git 
+    component.books = mockBooks;
 
     expect(component.getCount(BookStatus.ToRead)).toBe(1);
     expect(component.getCount(BookStatus.Reading)).toBe(1);
