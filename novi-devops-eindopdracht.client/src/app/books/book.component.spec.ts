@@ -152,10 +152,9 @@ describe('BookComponent', () => {
   });
 
   it('should filter books by status', () => {
+    fixture.detectChanges(); 
     component.books = mockBooks;
     component.selectedFilter = 'toread';
-
-    fixture.detectChanges(); 
 
     const filtered = component.filteredBooks;
 
@@ -173,7 +172,8 @@ describe('BookComponent', () => {
   });
 
   it('should count books by status', () => {
-    component.books = mockBooks;
+    fixture.detectChanges();
+    component.books = mockBooks;git 
 
     expect(component.getCount(BookStatus.ToRead)).toBe(1);
     expect(component.getCount(BookStatus.Reading)).toBe(1);
