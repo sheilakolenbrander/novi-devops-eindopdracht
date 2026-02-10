@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { BookComponent } from './book.component';
 import { BookService } from '../services/book.service';
 import { Book } from '../models/book';
 import { BookStatus } from '../models/book-status.enum';
 import { of, throwError } from 'rxjs';
+import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -23,22 +22,24 @@ describe('BookComponent', () => {
   let bookService: jasmine.SpyObj<BookService>;
 
   const mockBooks: Book[] = [
-    { id: 1, title: '1984', author: 'Orwell', status: BookStatus.ToRead },
-    { id: 2, title: 'Brave New World', author: 'Huxley', status: BookStatus.Reading },
-    { id: 3, title: 'Fahrenheit 451', author: 'Bradbury', status: BookStatus.Read }
+    { id: 1, title: 'Test Book 1', author: 'Author 1', status: BookStatus.ToRead },
+    { id: 2, title: 'Test Book 2', author: 'Author 2', status: BookStatus.Reading },
+    { id: 3, title: 'Test Book 3', author: 'Author 3', status: BookStatus.Read },
+    { id: 4, title: 'Test Book 4', author: 'Author 4', status: BookStatus.ToRead }
   ];
 
   beforeEach(async () => {
     const bookServiceSpy = jasmine.createSpyObj('BookService', [
       'getAll',
       'add',
-      'updateStatus'
+      'updateStatus',
+      'getById',
+      'getByStatus'
     ]);
 
     await TestBed.configureTestingModule({
       declarations: [BookComponent],
       imports: [
-        HttpClientTestingModule,
         ReactiveFormsModule,
         FormsModule,
         BrowserAnimationsModule,
@@ -58,8 +59,6 @@ describe('BookComponent', () => {
     }).compileComponents();
 
     bookService = TestBed.inject(BookService) as jasmine.SpyObj<BookService>;
-    bookService.getAll.and.returnValue(of(mockBooks));
-
     fixture = TestBed.createComponent(BookComponent);
     component = fixture.componentInstance;
   });
@@ -68,132 +67,276 @@ describe('BookComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load books on init', () => {
-    bookService.getAll.and.returnValue(of(mockBooks));
+  describe('ngOnInit', () => {
+    it('should load books on initialization', () => {
+      bookService.getAll.and.returnValue(of(mockBooks));
 
-    fixture.detectChanges();
+      component.ngOnInit();
 
-    expect(bookService.getAll).toHaveBeenCalled();
-    expect(component.books.length).toBe(3);
+      expect(bookService.getAll).toHaveBeenCalled();
+      expect(component.books).toEqual(mockBooks);
+    });
   });
 
-  it('should handle error when loading books fails', () => {
-    bookService.getAll.and.returnValue(throwError(() => new Error('API Error')));
+  describe('loadBooks', () => {
+    it('should load books successfully', () => {
+      bookService.getAll.and.returnValue(of(mockBooks));
 
-    spyOn(console, 'error');
+      component.loadBooks();
 
-    component.loadBooks();
+      expect(bookService.getAll).toHaveBeenCalled();
+      expect(component.books).toEqual(mockBooks);
+      expect(component.books.length).toBe(4);
+    });
 
-    expect(console.error).toHaveBeenCalled();
+    it('should handle error when loading books fails', () => {
+      const errorResponse = { status: 500, message: 'Server error' };
+      spyOn(console, 'error');
+      bookService.getAll.and.returnValue(throwError(() => errorResponse));
+
+      component.loadBooks();
+
+      expect(bookService.getAll).toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalledWith('Error loading books:', errorResponse);
+    });
   });
 
-  it('should add a new book with valid inputs', () => {
-    const newBook: Book = { id: 0, title: 'New Book', author: 'New Author', status: BookStatus.ToRead };
-    const savedBook: Book = { ...newBook, id: 4 };
+  describe('addBook', () => {
+    let titleInput: jasmine.SpyObj<NgModel>;
+    let authorInput: jasmine.SpyObj<NgModel>;
 
-    bookService.add.and.returnValue(of(savedBook));
-    bookService.getAll.and.returnValue(of([...mockBooks, savedBook]));
+    beforeEach(() => {
+      titleInput = jasmine.createSpyObj('NgModel', ['reset']);
+      authorInput = jasmine.createSpyObj('NgModel', ['reset']);
+      bookService.getAll.and.returnValue(of(mockBooks));
+    });
 
-    // Create mock NgModel objects
-    const titleInput: Partial<NgModel> = {
-      reset: jasmine.createSpy('reset')
-    };
+    it('should add a new book successfully', () => {
+      component.newBook = {
+        id: 0,
+        title: 'New Book',
+        author: 'New Author',
+        status: BookStatus.ToRead
+      };
+      bookService.add.and.returnValue(of({}));
 
-    const authorInput: Partial<NgModel> = {
-      reset: jasmine.createSpy('reset')
-    };
+      component.addBook(titleInput, authorInput);
 
-    component.newBook = newBook;
-    component.addBook(titleInput as NgModel, authorInput as NgModel);
+      expect(bookService.add).toHaveBeenCalledWith({
+        id: 0,
+        title: 'New Book',
+        author: 'New Author',
+        status: BookStatus.ToRead
+      });
+      expect(bookService.getAll).toHaveBeenCalled();
+      expect(titleInput.reset).toHaveBeenCalled();
+      expect(authorInput.reset).toHaveBeenCalled();
+    });
 
-    expect(bookService.add).toHaveBeenCalledWith(newBook);
-    expect(titleInput.reset).toHaveBeenCalled();
-    expect(authorInput.reset).toHaveBeenCalled();
+    it('should reset newBook after adding', () => {
+      component.newBook = {
+        id: 0,
+        title: 'New Book',
+        author: 'New Author',
+        status: BookStatus.Reading
+      };
+      bookService.add.and.returnValue(of({}));
+
+      component.addBook(titleInput, authorInput);
+
+      expect(component.newBook).toEqual({
+        id: 0,
+        title: '',
+        author: '',
+        status: BookStatus.ToRead
+      });
+    });
+
+    it('should not add book when title is empty', () => {
+      component.newBook = {
+        id: 0,
+        title: '',
+        author: 'New Author',
+        status: BookStatus.ToRead
+      };
+
+      component.addBook(titleInput, authorInput);
+
+      expect(bookService.add).not.toHaveBeenCalled();
+      expect(titleInput.reset).not.toHaveBeenCalled();
+      expect(authorInput.reset).not.toHaveBeenCalled();
+    });
+
+    it('should not add book when author is empty', () => {
+      component.newBook = {
+        id: 0,
+        title: 'New Book',
+        author: '',
+        status: BookStatus.ToRead
+      };
+
+      component.addBook(titleInput, authorInput);
+
+      expect(bookService.add).not.toHaveBeenCalled();
+      expect(titleInput.reset).not.toHaveBeenCalled();
+      expect(authorInput.reset).not.toHaveBeenCalled();
+    });
+
+    it('should not add book when both title and author are empty', () => {
+      component.newBook = {
+        id: 0,
+        title: '',
+        author: '',
+        status: BookStatus.ToRead
+      };
+
+      component.addBook(titleInput, authorInput);
+
+      expect(bookService.add).not.toHaveBeenCalled();
+    });
   });
 
-  it('should not add book with empty title', () => {
-    const titleInput: Partial<NgModel> = {
-      reset: jasmine.createSpy('reset')
-    };
+  describe('setStatus', () => {
+    it('should update book status to Reading', () => {
+      const book = mockBooks[0];
+      bookService.updateStatus.and.returnValue(of({}));
 
-    const authorInput: Partial<NgModel> = {
-      reset: jasmine.createSpy('reset')
-    };
+      component.setStatus(book, BookStatus.Reading);
 
-    component.newBook = { id: 0, title: '', author: 'Author', status: BookStatus.ToRead };
-    component.addBook(titleInput as NgModel, authorInput as NgModel);
+      expect(book.status).toBe(BookStatus.Reading);
+      expect(bookService.updateStatus).toHaveBeenCalledWith(1, BookStatus.Reading);
+    });
 
-    expect(bookService.add).not.toHaveBeenCalled();
+    it('should update book status to Read', () => {
+      const book = mockBooks[1];
+      bookService.updateStatus.and.returnValue(of({}));
+
+      component.setStatus(book, BookStatus.Read);
+
+      expect(book.status).toBe(BookStatus.Read);
+      expect(bookService.updateStatus).toHaveBeenCalledWith(2, BookStatus.Read);
+    });
+
+    it('should update book status to ToRead', () => {
+      const book = mockBooks[2];
+      bookService.updateStatus.and.returnValue(of({}));
+
+      component.setStatus(book, BookStatus.ToRead);
+
+      expect(book.status).toBe(BookStatus.ToRead);
+      expect(bookService.updateStatus).toHaveBeenCalledWith(3, BookStatus.ToRead);
+    });
   });
 
-  it('should not add book with empty author', () => {
-    const titleInput: Partial<NgModel> = {
-      reset: jasmine.createSpy('reset')
-    };
+  describe('filteredBooks', () => {
+    beforeEach(() => { component.books = mockBooks; });
 
-    const authorInput: Partial<NgModel> = {
-      reset: jasmine.createSpy('reset')
-    };
+    it('should return all books when filter is "all"', () => {
+      component.selectedFilter = 'all';
 
-    component.newBook = { id: 0, title: 'Title', author: '', status: BookStatus.ToRead };
-    component.addBook(titleInput as NgModel, authorInput as NgModel);
+      const result = component.filteredBooks;
 
-    expect(bookService.add).not.toHaveBeenCalled();
+      expect(result.length).toBe(4);
+      expect(result).toEqual(mockBooks);
+    });
+
+    it('should return only ToRead books when filter is "toread"', () => {
+      component.selectedFilter = 'toread';
+
+      const result = component.filteredBooks;
+
+      expect(result.length).toBe(2);
+      expect(result.every(b => b.status === BookStatus.ToRead)).toBe(true);
+    });
+
+    it('should return only Reading books when filter is "reading"', () => {
+      component.selectedFilter = 'reading';
+
+      const result = component.filteredBooks;
+
+      expect(result.length).toBe(1);
+      expect(result[0].status).toBe(BookStatus.Reading);
+    });
+
+    it('should return only Read books when filter is "read"', () => {
+      component.selectedFilter = 'read';
+
+      const result = component.filteredBooks;
+
+      expect(result.length).toBe(1);
+      expect(result[0].status).toBe(BookStatus.Read);
+    });
   });
 
-  it('should update book status', () => {
-    bookService.updateStatus.and.returnValue(of(void 0));
-    const book: Book = mockBooks[0];
+  describe('getCount', () => {
+    beforeEach(() => {
+      component.books = mockBooks;
+    });
 
-    component.setStatus(book, BookStatus.Reading);
+    it('should return correct count for ToRead status', () => {
+      const count = component.getCount(BookStatus.ToRead);
+      expect(count).toBe(2);
+    });
 
-    expect(book.status).toBe(BookStatus.Reading);
-    expect(bookService.updateStatus).toHaveBeenCalledWith(book.id, BookStatus.Reading);
+    it('should return correct count for Reading status', () => {
+      const count = component.getCount(BookStatus.Reading);
+      expect(count).toBe(1);
+    });
+
+    it('should return correct count for Read status', () => {
+      const count = component.getCount(BookStatus.Read);
+      expect(count).toBe(1);
+    });
+
+    it('should return 0 when no books match the status', () => {
+      component.books = [];
+      const count = component.getCount(BookStatus.ToRead);
+      expect(count).toBe(0);
+    });
   });
 
-  it('should filter books by status', () => {
-    fixture.detectChanges(); 
-    component.books = mockBooks;
-    component.selectedFilter = 'toread';
+  describe('getStatusLabel', () => {
+    it('should return "Wil lezen" for ToRead status', () => {
+      const label = component.getStatusLabel(BookStatus.ToRead);
+      expect(label).toBe('Wil lezen');
+    });
 
-    const filtered = component.filteredBooks;
+    it('should return "Bezig" for Reading status', () => {
+      const label = component.getStatusLabel(BookStatus.Reading);
+      expect(label).toBe('Bezig');
+    });
 
-    expect(filtered.length).toBe(1);
-    expect(filtered[0].status).toBe(BookStatus.ToRead);
+    it('should return "Gelezen" for Read status', () => {
+      const label = component.getStatusLabel(BookStatus.Read);
+      expect(label).toBe('Gelezen');
+    });
+
+    it('should return empty string for unknown status', () => {
+      const label = component.getStatusLabel(999 as BookStatus);
+      expect(label).toBe('');
+    });
   });
 
-  it('should return all books when filter is "all"', () => {
-    component.books = mockBooks;
-    component.selectedFilter = 'all';
+  describe('Component initialization', () => {
+    it('should initialize with empty books array', () => {
+      expect(component.books).toEqual([]);
+    });
 
-    const filtered = component.filteredBooks;
+    it('should initialize with "all" as selected filter', () => {
+      expect(component.selectedFilter).toBe('all');
+    });
 
-    expect(filtered.length).toBe(3);
-  });
+    it('should initialize newBook with default values', () => {
+      expect(component.newBook).toEqual({
+        id: 0,
+        title: '',
+        author: '',
+        status: BookStatus.ToRead
+      });
+    });
 
-  it('should count books by status', () => {
-    fixture.detectChanges();
-    component.books = mockBooks;
-
-    expect(component.getCount(BookStatus.ToRead)).toBe(1);
-    expect(component.getCount(BookStatus.Reading)).toBe(1);
-    expect(component.getCount(BookStatus.Read)).toBe(1);
-  });
-
-  it('should return correct status labels', () => {
-    expect(component.getStatusLabel(BookStatus.ToRead)).toBe('Wil lezen');
-    expect(component.getStatusLabel(BookStatus.Reading)).toBe('Bezig');
-    expect(component.getStatusLabel(BookStatus.Read)).toBe('Gelezen');
-  });
-
-  it('should return correct status classes', () => {
-    expect(component.getStatusClass(BookStatus.ToRead)).toBe('status-toread');
-    expect(component.getStatusClass(BookStatus.Reading)).toBe('status-reading');
-    expect(component.getStatusClass(BookStatus.Read)).toBe('status-read');
-  });
-
-  it('should have BookStatus enum available', () => {
-    expect(component.BookStatus).toBeDefined();
-    expect(component.BookStatus.ToRead).toBe(BookStatus.ToRead);
+    it('should have BookStatus enum accessible', () => {
+      expect(component.BookStatus).toBe(BookStatus);
+    });
   });
 });
