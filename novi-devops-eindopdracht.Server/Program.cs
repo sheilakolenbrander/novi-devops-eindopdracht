@@ -12,13 +12,21 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("CorsPolicy",
         policy =>
         {
-            policy
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            var allowedOrigins = builder.Configuration
+                .GetSection("AllowedOrigins")
+                .Get<string[]>() ?? Array.Empty<string>();
+
+            if (allowedOrigins.Length > 0)
+            {
+                policy
+                    .WithOrigins(allowedOrigins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            }
         });
 });
 
@@ -30,18 +38,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAll");
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
 app.MapHealthChecks("/health");
-app.MapGet("/", () => Results.Redirect("/health"));
 
+if (!app.Environment.IsDevelopment())
+{
+    app.MapGet("/", () => Results.Redirect("/health"));
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    app.Urls.Add($"http://0.0.0.0:{port}");
+}
 app.MapControllers();
-
-app.MapControllers();
-
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.Run();
