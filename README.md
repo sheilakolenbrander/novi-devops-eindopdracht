@@ -1,38 +1,40 @@
 ```mermaid
-flowchart LR
-  Repo[(GitHub repo)] -->|push main / pull_request| GA[GitHub Actions]
+flowchart TB
+  Dev[Developer] -->|Commit push / PR| Repo[(GitHub repo)]
+  Repo -->|Triggers: push main / pull_request| GA[GitHub Actions]
 
-  subgraph FE[Frontend - Angular workflow]
+  GA --> FE_start
+  GA --> BE_start
+
+  subgraph FE[Frontend - Angular]
     direction TB
-    FE1[Checkout] --> FE2[Setup Node 20 + npm cache]
-    FE2 --> FE3[Lint - ESLint]
-    FE3 --> FE4[Unit tests - Jasmine/Karma]
-    FE4 --> FE5[Build - production]
-    FE5 --> FE6[Docker build - nginx]
-    FE6 --> FE7[Tag - SHA + latest]
-    FE7 --> FE8[Push image]
-    FE8 --> FE9[Webhook - Render deploy]
+    FE_start[Checkout] --> FE_node[Setup Node 20 + npm cache]
+    FE_node --> FE_lint[Lint - ESLint]
+    FE_lint --> FE_test[Unit tests - Jasmine/Karma]
+    FE_test --> FE_build[Build - production]
+    FE_build --> FE_docker[Docker build - nginx]
+    FE_docker --> FE_tag[Tag - SHA + latest]
+    FE_tag --> FE_push[Push image]
+    FE_push --> FE_hook[Webhook - Render deploy]
   end
 
-  subgraph BE[Backend - .NET 8 workflow]
+  subgraph BE[Backend - C# / .NET 8]
     direction TB
-    BE1[Checkout] --> BE2[Setup .NET 8]
-    BE2 --> BE3[Restore]
-    BE3 --> BE4[Unit tests - xUnit]
-    BE4 --> BE5[Docker build - ASP.NET Core]
-    BE5 --> BE6[Tag - SHA + latest]
-    BE6 --> BE7[Push image]
-    BE7 --> BE8[Webhook - Render deploy]
+    BE_start[Checkout] --> BE_dotnet[Setup .NET 8]
+    BE_dotnet --> BE_restore[Restore]
+    BE_restore --> BE_test[Unit tests - xUnit]
+    BE_test --> BE_docker[Docker build - ASP.NET Core]
+    BE_docker --> BE_tag[Tag - SHA + latest]
+    BE_tag --> BE_push[Push image]
+    BE_push --> BE_hook[Webhook - Render deploy]
+    BE_hook --> BE_health[/health endpoint/]
   end
 
-  GA --> FE1
-  GA --> BE1
+  FE_push --> GHCR[(GHCR)]
+  BE_push --> GHCR
 
-  FE8 --> GHCR[(GHCR)]
-  BE7 --> GHCR
-
-  FE9 --> RenderFE[Render Web Service - Frontend]
-  BE8 --> RenderBE[Render Web Service - Backend]
+  FE_hook --> RenderFE[Render Web Service - Frontend]
+  BE_hook --> RenderBE[Render Web Service - Backend]
 
   User[Gebruiker] -->|HTTPS| RenderFE
   RenderFE -->|REST API| RenderBE
