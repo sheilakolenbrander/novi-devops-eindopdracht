@@ -33,8 +33,4 @@ export class BookService {
   getByStatus(status: BookStatus): Observable<Book[]> {
     return this.http.get<Book[]>(`${this.api}/status/${status}`);
   }
-
-  getByGenre(genre: string): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.api}/genre/${genre}`);
-  }
 }

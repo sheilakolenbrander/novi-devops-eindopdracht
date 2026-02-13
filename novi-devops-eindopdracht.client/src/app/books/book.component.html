@@ -15,15 +15,6 @@
           <input matInput [(ngModel)]="newBook.author" #authorInput="ngModel" required>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Genre</mat-label>
-          <mat-select [(ngModel)]="newBook.genre">
-            <mat-option value="">Geen</mat-option>
-            <mat-option value="Fantasy">Fantasy</mat-option>
-            <mat-option value="Romance">Romance</mat-option>
-            <mat-option value="Thriller">Thriller</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
           <mat-label>Status</mat-label>
           <mat-select [(ngModel)]="newBook.status">
             <mat-option [value]="BookStatus.ToRead">Wil lezen</mat-option>
@@ -56,9 +47,6 @@
     <mat-card class="book-card">
       <mat-card-content>
         <div class="book-info">
-          @if (book.genre) {
-          <mat-chip class="genre-chip">{{ book.genre }}</mat-chip>
-          }
           <h3>{{book.title}}</h3>
           <p class="author">{{book.author}}</p>
           <mat-chip-set>
