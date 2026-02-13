@@ -37,6 +37,13 @@ namespace novi_devops_eindopdracht.Server.Controllers
             return Ok(books);
         }
 
+        [HttpGet("genre/{genre}")]
+        public ActionResult<List<Book>> GetByGenre(string genre)
+        {
+            var books = _service.GetByGenre(genre);
+            return Ok(books);
+        }
+
         [HttpPost]
         public ActionResult<Book> Add(Book book)
         {

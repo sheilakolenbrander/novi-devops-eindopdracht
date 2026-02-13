@@ -22,6 +22,12 @@ namespace novi_devops_eindopdracht.Server.Services
             return bookList;
         }
 
+        public List<Book> GetByGenre(string genre)
+        {
+            var bookList = _books.Where(b => b.Genre == genre).ToList();
+            return bookList;
+        }
+
         public Book Add(Book book)
         {
             book.Id = _books.Count + 1;
