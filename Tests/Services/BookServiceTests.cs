@@ -194,5 +194,19 @@ namespace Tests.Services
             Assert.NotNull(updatedBook);
             Assert.Equal(BookStatus.Read, updatedBook.Status);
         }
+
+        [Fact]
+        public void GetByGenre_ReturnsCorrectBooks()
+        {
+            var service = new BookService();
+
+            service.Add(new Book { Title = "Book1", Genre = "Fantasy" });
+            service.Add(new Book { Title = "Book2", Genre = "SciFi" });
+            //service.Add(new Book { Title = "Book3", Genre = "Fantasy" });
+
+            var result = service.GetByGenre("Fantasy");
+
+            Assert.Single(result);
+        }
     }
 }

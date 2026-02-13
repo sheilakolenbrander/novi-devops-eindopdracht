@@ -148,6 +148,7 @@ describe('BookComponent', () => {
         id: 0,
         title: '',
         author: '',
+        genre: '',
         status: BookStatus.ToRead
       });
     });
@@ -331,6 +332,7 @@ describe('BookComponent', () => {
         id: 0,
         title: '',
         author: '',
+        genre: '',
         status: BookStatus.ToRead
       });
     });

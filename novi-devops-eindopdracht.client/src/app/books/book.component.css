@@ -140,6 +140,15 @@
   font-size: 12px;
 }
 
+.genre-chip {
+  background-color: #e0e0e0;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.75rem;
+  height: 20px;
+}
+
 .status-toread {
   background-color: #e3f2fd !important;
   color: #1976d2 !important;

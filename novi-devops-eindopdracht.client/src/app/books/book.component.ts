@@ -21,6 +21,7 @@ export class BookComponent implements OnInit {
     id: 0,
     title: '',
     author: '',
+    genre: '',
     status: BookStatus.ToRead
   };
 
@@ -43,7 +44,7 @@ export class BookComponent implements OnInit {
     if (this.newBook.title && this.newBook.author) {
       this.bookService.add(this.newBook).subscribe(() => {
         this.loadBooks();
-        this.newBook = { id: 0, title: '', author: '', status: BookStatus.ToRead };
+        this.newBook = { id: 0, title: '', author: '', genre: '', status: BookStatus.ToRead };
 
         // Reset de form state zodat de rode omlijning verdwijnt
         titleInput.reset();
